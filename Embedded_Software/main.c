@@ -358,11 +358,11 @@ int main(int argc, char** argv){
      
         // Write input to LDM - Mapping 8 samples per PE
         for(int k=0; k<320; k++) {
-            int pe_idx = k / 8;     // Xác định PE nào
-            int local_addr = k % 8; // Địa chỉ bên trong PE đó
-            int hw_addr = (pe_idx << 6) | local_addr; // Bước nhảy 64 giữa các PE
+            int pe_idx = k % 40;     // Dữ liệu chia đều xoay vòng qua 40 PE
+            int local_addr = k / 40; // Địa chỉ bên trong mỗi PE
+            int hw_addr = (pe_idx << 6) | local_addr; 
             *(MY_IP_info.reg_mmap + LDM_INPUT_BASE_PHYS + hw_addr) = Pixel[k];
-        }   
+        }  
 
         // Start
         *(MY_IP_info.reg_mmap + START_BASE) = 1;
@@ -373,12 +373,15 @@ int main(int argc, char** argv){
         }
         
         // Read output
-        for(int j=0; j<1280; j++) {
-            int pe_idx = j / 32;     // 40 PE, mỗi PE có 32 kết quả
-            int local_addr = j % 32; 
-            int hw_addr = (pe_idx << 6) | local_addr;
-            int16_t raw_16bit = *(MY_IP_info.reg_mmap + LDM_OUTPUT_BASE_PHYS + hw_addr);
-            CNN_output[j] = fixed_point_to_float(raw_16bit);
+        for (int channel = 0; channel < 32; channel++) {
+            for (int pe_idx = 0; pe_idx < 40; pe_idx++) {
+                int local_addr = channel; // Mỗi địa chỉ cục bộ là 1 channel
+                int hw_addr = (pe_idx << 6) | local_addr;
+                int16_t raw_16bit = *(MY_IP_info.reg_mmap + LDM_OUTPUT_BASE_PHYS + hw_addr);
+                
+                // Lưu vào đúng vị trí GAP mong đợi: (channel_index * 40) + spatial_index
+                CNN_output[channel * 40 + pe_idx] = fixed_point_to_float(raw_16bit);
+            }
         }
 
         clock_gettime(CLOCK_REALTIME, &t1);

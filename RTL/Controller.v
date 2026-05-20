@@ -218,7 +218,7 @@ module Controller
 	assign PE_Selection_wr		= (pad_wr == 0) ? 0: `PE_NUM - (pad_wr);
 	assign PE_Incr_wr			= ((PE_Selection_wr + (j_count_rg)) >= `PE_NUM) ? PE_Selection_wr + (j_count_rg) - `PE_NUM: PE_Selection_wr + (j_count_rg);
 	assign CTRL_LDM_addra_Incr_out	= CTRL_LDM_addra_Incr_rg;
-	assign Padding_Read_SEL_wr	= (((y_count_rg == 0)&(j_count_rg < pad_wr)))? `PE_NUM - pad_wr + j_count_rg : ((pad_wr != 0)&((y_count_rg == y_wr)&(j_count_rg >= (j_wr - pad_wr)))) ? j_count_rg - pad_wr - 1 : 63;
+	// assign Padding_Read_SEL_wr	= (((y_count_rg == 0)&(j_count_rg < pad_wr)))? `PE_NUM - pad_wr + j_count_rg : ((pad_wr != 0)&((y_count_rg == y_wr)&(j_count_rg >= (j_wr - pad_wr)))) ? j_count_rg - pad_wr - 1 : 63;
 	assign Padding_Read_out 	= Padding_Read_rg;
 	
 	///--------- State Machine ---------///
@@ -255,182 +255,163 @@ module Controller
 
 	always @(posedge CLK or negedge RST) begin
 		if (~RST) begin
-			n_count_rg	  			<= 0;
-			y_count_rg				<= 0;
-			k_count_rg				<= 0;
-			j_count_rg				<= 0;
+			n_count_rg             <= 0;
+			y_count_rg             <= 0;
+			k_count_rg             <= 0;
+			j_count_rg             <= 0;
 			
-			j_count_2_rg			<= 0;
+			j_count_2_rg           <= 0;
 				
-			next_ctx_flg_1_rg		<= 0;
-			next_ctx_flg_2_rg		<= 0;
-			next_ctx_flg_3_rg		<= 0;
+			next_ctx_flg_1_rg      <= 0;
+			next_ctx_flg_2_rg      <= 0;
+			next_ctx_flg_3_rg      <= 0;
 			
-			CTRL_WRAM_addra_1_rg	<= 0;
-			CTRL_WRAM_addra_2_rg	<= 0;
+			CTRL_WRAM_addra_1_rg   <= 0;
+			CTRL_WRAM_addra_2_rg   <= 0;
 			
-			CTRL_LDM_addra_rg		<= 0;
+			CTRL_LDM_addra_rg      <= 0;
 			
-			CTRL_LDM_addra_Incr_rg	<= 0;
-			CTRL_BRAM_addra_rg		<= 0;
-			MP_Padding_2_rg			<= 0;
-			MP_Padding_3_rg			<= 0;
+			CTRL_LDM_addra_Incr_rg <= 0;
+			CTRL_BRAM_addra_rg     <= 0;
+			MP_Padding_2_rg        <= 0;
+			MP_Padding_3_rg        <= 0;
 			
-			Overarray_rg			<= 0;
-			Overarray_2_rg			<= 0;
+			Overarray_rg           <= 0;
+			Overarray_2_rg         <= 0;
 		end
 		else begin
-			Overarray_2_rg			<= Overarray_rg;
+			Overarray_2_rg         <= Overarray_rg;
+			
 			if(STATE_rg == IDLE) begin
-				n_count_rg	  				<= 0;
-				y_count_rg					<= 0;
-				k_count_rg					<= 0;
-				j_count_rg					<= 0;
+				n_count_rg             <= 0;
+				y_count_rg             <= 0;
+				k_count_rg             <= 0;
+				j_count_rg             <= 0;
 				
-				j_count_2_rg				<= 0;
+				j_count_2_rg           <= 0;
 				
-				CTRL_LDM_addra_rg			<= 0;
+				CTRL_LDM_addra_rg      <= 0;
 				
-				CTRL_LDM_addra_Incr_rg		<= 0;
-				CTRL_LDM_y_count_rg			<= 0;
+				CTRL_LDM_addra_Incr_rg <= 0;
+				CTRL_LDM_y_count_rg    <= 0;
 				
-				next_ctx_flg_1_rg			<= 0;
-				next_ctx_flg_2_rg			<= 0;
-				next_ctx_flg_3_rg			<= 0;				
-				next_ctx_flg_4_rg			<= 0;
+				next_ctx_flg_1_rg      <= 0;
+				next_ctx_flg_2_rg      <= 0;
+				next_ctx_flg_3_rg      <= 0;               
+				next_ctx_flg_4_rg      <= 0;
 				
-				MP_Padding_2_rg				<= 0;
-				MP_Padding_3_rg				<= 0;
-				CTRL_WRAM_addra_1_rg		<= 0;
-				CTRL_WRAM_addra_2_rg		<= 0;
-				CTRL_BRAM_addra_rg			<= 0;
+				MP_Padding_2_rg        <= 0;
+				MP_Padding_3_rg        <= 0;
+				CTRL_WRAM_addra_1_rg   <= 0;
+				CTRL_WRAM_addra_2_rg   <= 0;
+				CTRL_BRAM_addra_rg     <= 0;
 				
-				Overarray_rg				<= 0;
-			end	
+				Overarray_rg           <= 0;
+			end 
 			else if(STATE_rg == LOAD_CTX) begin
-				n_count_rg	  				<= 0;
-				y_count_rg					<= 0;
-				k_count_rg					<= 0;
-				j_count_rg					<= 0;
+				n_count_rg             <= 0;
+				y_count_rg             <= 0;
+				k_count_rg             <= 0;
+				j_count_rg             <= 0;
 				
-				j_count_2_rg				<= 0;
+				j_count_2_rg           <= 0;
 				
-				CTRL_LDM_addra_rg			<= 0;
+				CTRL_LDM_addra_rg      <= 0;
 				
-				CTRL_LDM_addra_Incr_rg		<= 0;
-				CTRL_LDM_y_count_rg			<= 0;
+				CTRL_LDM_addra_Incr_rg <= 0;
+				CTRL_LDM_y_count_rg    <= 0;
 				
-				next_ctx_flg_1_rg			<= 0;
-				next_ctx_flg_2_rg			<= 0;
-				next_ctx_flg_3_rg			<= 0;				
-				next_ctx_flg_4_rg			<= 0;
+				next_ctx_flg_1_rg      <= 0;
+				next_ctx_flg_2_rg      <= 0;
+				next_ctx_flg_3_rg      <= 0;
+				next_ctx_flg_4_rg      <= 0;
 				
-				MP_Padding_2_rg				<= 0;
-				MP_Padding_3_rg				<= 0;
+				MP_Padding_2_rg        <= 0;
+				MP_Padding_3_rg        <= 0;
 				
-				CTRL_WRAM_addra_1_rg		<= 0;
+				CTRL_WRAM_addra_1_rg   <= 0;
 				
-				Overarray_rg			<= 0;
+				Overarray_rg           <= 0;
 			end
 			else begin
-				j_count_2_rg				<= j_count_rg;			
+				j_count_2_rg <= j_count_rg;          
+				
 				if (j_count_rg == j_wr) begin
-					j_count_rg 						<= 0;
-					CTRL_LDM_addra_Incr_rg			<= 0;
+					j_count_rg             <= 0;
+					CTRL_LDM_addra_Incr_rg <= 0;
+					
 					if (k_count_rg == k_wr) begin
-						k_count_rg 					<= 0;
-						CTRL_WRAM_addra_1_rg 		<= 0;
+						k_count_rg           <= 0;
+						CTRL_WRAM_addra_1_rg <= 0;
 						
 						if(conv_en_wr) begin
-							CTRL_LDM_addra_rg 		<= 0;
-						end
-						else begin
-							CTRL_LDM_addra_rg 		<= CTRL_LDM_addra_rg + 1;
+							CTRL_LDM_addra_rg <= 0;
+						end else begin
+							CTRL_LDM_addra_rg <= CTRL_LDM_addra_rg + 1;
 						end
 						
 						if (y_count_rg == y_wr) begin
-							y_count_rg 				<= 0;
+							y_count_rg          <= 0;
+							MP_Padding_2_rg     <= 1;
+							CTRL_LDM_y_count_rg <= 0;
+							Overarray_rg        <= 1;
 							
-							MP_Padding_2_rg			<= 1;
-						
-							CTRL_LDM_y_count_rg		<= 0;
-							Overarray_rg			<= 1;
+							// FIX: Đã đưa cập nhật addra_2 vào đây trước khi addra_1 bị xóa (ở chu kỳ kế tiếp)
+							CTRL_WRAM_addra_2_rg <= CTRL_WRAM_addra_2_rg + CTRL_WRAM_addra_1_rg + conv_en_wr;
+							
 							if (n_count_rg == n_wr) begin
 								// Reset all counters when reaching the max value for n, y, k, and j
-								n_count_rg 			<= 0;
-								CTRL_BRAM_addra_rg	<= CTRL_BRAM_addra_rg + conv_en_wr;
-								MP_Padding_3_rg		<= 1;
-							end 
-							else begin
+								n_count_rg         <= 0;
+								CTRL_BRAM_addra_rg <= CTRL_BRAM_addra_rg + conv_en_wr;
+								MP_Padding_3_rg    <= 1;
+							end else begin
 								// Increment n and reset y, k, j counters
-								n_count_rg 			<= n_count_rg + 1;
-								CTRL_BRAM_addra_rg	<= CTRL_BRAM_addra_rg + conv_en_wr;
-								MP_Padding_3_rg		<= 0;
+								n_count_rg         <= n_count_rg + 1;
+								CTRL_BRAM_addra_rg <= CTRL_BRAM_addra_rg + conv_en_wr;
+								MP_Padding_3_rg    <= 0;
 							end
-						end 
-						else begin
+						end else begin
 							// Increment y and reset k, j counters
-							y_count_rg 				<= y_count_rg + 1;
+							y_count_rg <= y_count_rg + 1;
 							if(conv_en_wr) begin
-								CTRL_LDM_y_count_rg	<= CTRL_LDM_y_count_rg + 1 + stride_wr;
+								CTRL_LDM_y_count_rg <= CTRL_LDM_y_count_rg + 1 + stride_wr;
+							end else begin              
+								CTRL_LDM_y_count_rg <= CTRL_LDM_y_count_rg;
 							end                     
-							else begin              
-								CTRL_LDM_y_count_rg	<= CTRL_LDM_y_count_rg;
-							end                     
-													
-							MP_Padding_2_rg			<= 0;
-							
+							MP_Padding_2_rg <= 0;
 						end
-					end 
-					else begin
+					end else begin
 						// Increment k and reset j counter
-						k_count_rg 					<= k_count_rg + 1;
-						
+						k_count_rg <= k_count_rg + 1;
 						if(conv_en_wr) begin
-							CTRL_LDM_addra_rg 		<= CTRL_LDM_addra_rg + CTRL_LDM_addra_inc_wr;
+							CTRL_LDM_addra_rg <= CTRL_LDM_addra_rg + CTRL_LDM_addra_inc_wr;
+						end else begin
+							CTRL_LDM_addra_rg <= CTRL_LDM_addra_rg;
 						end
-						else begin
-							CTRL_LDM_addra_rg 		<= CTRL_LDM_addra_rg;
-						end
-						
-						CTRL_WRAM_addra_1_rg 		<= CTRL_WRAM_addra_1_rg + conv_en_wr;
+						CTRL_WRAM_addra_1_rg <= CTRL_WRAM_addra_1_rg + conv_en_wr;
 					end
-				end 
-				else begin
-					j_count_rg 						<= j_count_rg + 1;
-				
-					
-					k_count_rg 						<= k_count_rg;
-					y_count_rg 						<= y_count_rg;
-					n_count_rg 						<= n_count_rg;
+				end else begin
+					j_count_rg                         <= j_count_rg + 1;
+					k_count_rg                         <= k_count_rg;
+					y_count_rg                         <= y_count_rg;
+					n_count_rg                         <= n_count_rg;
 
-					CTRL_WRAM_addra_1_rg 			<= CTRL_WRAM_addra_1_rg + conv_en_wr;
-
-					CTRL_LDM_addra_Incr_rg[PE_Incr_wr]		<= 1'b1;
-					
-					Overarray_rg					<= 0;
-				end		
+					CTRL_WRAM_addra_1_rg               <= CTRL_WRAM_addra_1_rg + conv_en_wr;
+					CTRL_LDM_addra_Incr_rg[PE_Incr_wr] <= 1'b1;
+					Overarray_rg                       <= 0;
+				end     
 				
-				next_ctx_flg_2_rg		<= next_ctx_flg_1_rg;
-				next_ctx_flg_3_rg		<= next_ctx_flg_2_rg;
-				next_ctx_flg_4_rg		<= next_ctx_flg_3_rg;
+				next_ctx_flg_2_rg <= next_ctx_flg_1_rg;
+				next_ctx_flg_3_rg <= next_ctx_flg_2_rg;
+				next_ctx_flg_4_rg <= next_ctx_flg_3_rg;
 				
 				if((n_count_rg == n_wr) & (y_count_rg == y_wr) & (k_count_rg == k_wr) & (j_wr==0)) begin
-					next_ctx_flg_1_rg			<= 1;
-				end	
-				else if((n_count_rg == n_wr) & (y_count_rg == y_wr) & (k_count_rg == k_wr)& (j_count_rg == j_wr)) begin
-					next_ctx_flg_1_rg			<= 1;
-				end	
-				else begin	
-					next_ctx_flg_1_rg			<= 0;
+					next_ctx_flg_1_rg <= 1;
+				end else if((n_count_rg == n_wr) & (y_count_rg == y_wr) & (k_count_rg == k_wr)& (j_count_rg == j_wr)) begin
+					next_ctx_flg_1_rg <= 1;
+				end else begin  
+					next_ctx_flg_1_rg <= 0;
 				end
-
-				if((y_count_rg == y_wr)&(j_count_rg == j_wr)&(k_count_rg == k_wr)) begin
-					CTRL_WRAM_addra_2_rg	<= CTRL_WRAM_addra_2_rg + CTRL_WRAM_addra_1_rg + conv_en_wr;
-				end
-				else begin
-					CTRL_WRAM_addra_2_rg	<= CTRL_WRAM_addra_2_rg;
-				end				
 			end
 		end
 	end	
@@ -454,18 +435,38 @@ module Controller
 	end	
 
 
-// Tối ưu hóa mạch Padding (Không dùng vòng case)
+// --- TỐI ƯU HÓA MẠCH PADDING (CHUẨN 40 PE) ---
+	reg [5:0] left_mask_count;
+	reg [5:0] right_mask_count;
+
 	always @(*) begin
-		if (Padding_Read_SEL_wr == 0) begin
-			Padding_Read_rg = {`PE_NUM{1'b0}}; // Không padding
+		left_mask_count = 0;
+		right_mask_count = 0;
+		
+		// 1. Tính số lượng PE cần Padding bên TRÁI (ở block y đầu tiên)
+		if (y_count_rg == 0 && j_count_rg < pad_wr) begin
+			left_mask_count = pad_wr - j_count_rg; 
+			// VD: pad=3, j=0 -> cần mask 3 PE (PE39, 38, 37)
+		end
+		
+		// 2. Tính số lượng PE cần Padding bên PHẢI (ở block y cuối cùng)
+		else if (pad_wr != 0 && y_count_rg == y_wr && j_count_rg >= (j_wr - pad_wr + 1)) begin
+			right_mask_count = j_count_rg - (j_wr - pad_wr);
+			// VD: pad=3, j_wr=6, j=4 -> cần mask 1 PE (PE0)
+		end
+		
+		// 3. Tạo Mask dựa trên số lượng tính được
+		if (left_mask_count > 0) begin
+			// Tạo mask bên trái: Tạo n bit 1 ở trên cùng (MSB)
+			Padding_Read_rg = ~((40'd1 << (`PE_NUM - left_mask_count)) - 1);
 		end 
-		// Padding ở bên phải (VD: SEL = 3 -> tạo ra 000...000111)
-		else if (Padding_Read_SEL_wr < (`PE_NUM / 2)) begin
-			Padding_Read_rg = (40'd1 << Padding_Read_SEL_wr) - 1; 
+		else if (right_mask_count > 0) begin
+			// Tạo mask bên phải: Tạo n bit 1 ở dưới cùng (LSB)
+			Padding_Read_rg = (40'd1 << right_mask_count) - 1;
 		end 
-		// Padding ở bên trái (VD: SEL = 37 -> tạo ra 111000...000)
 		else begin
-			Padding_Read_rg = ~((40'd1 << Padding_Read_SEL_wr) - 1);
+			// Không padding (trường hợp SEL=63 cũ) -> Data an toàn 100%
+			Padding_Read_rg = 40'd0;
 		end
 	end
 	

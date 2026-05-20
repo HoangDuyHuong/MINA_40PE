@@ -245,11 +245,13 @@ void Conv1D_0(float Input_Conv[324],float Output_Conv[1280], float bias[8], floa
 	}
 
 	for (int i = 0; i < 1280; i++) {
-        Output_Conv[i] = fixedpoint_converter(Output_Conv[i]);
+		Output_Conv[i] = fixedpoint_converter(Output_Conv[i]);
+		if (Output_Conv[i] < 0) Output_Conv[i] = 0;   // match RTL ReLU
+
     }
 	
     // write_to_file("Output_Conv.txt", Output_Conv, 1280);
-	write_to_file2("Golden_Output_Layer1.txt", Output_Conv, 1280);
+	write_vivado_golden("Golden_Output_Layer1_relu.txt", Output_Conv, 1280);	
 	
     write_bias_to_file(bias, 8);
     write_weight_to_file(kernel, 56);
